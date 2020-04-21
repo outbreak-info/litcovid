@@ -49,7 +49,6 @@ def load_annotations(data_folder):
         "isBasedOn":[]
     }
 
-
     try:
         root = ElementTree.fromstring(r.content)
         has_children = list(root.iter())
