@@ -4,9 +4,12 @@ import requests
 import json
 from xml.etree import ElementTree
 from dateutil import parser
+
 import API_KEY from parser_config
 
 from biothings.utils.common import open_anyfile
+from biothings import config
+logging = config.logger
 
 def load_annotations(data_folder):
 
@@ -152,9 +155,10 @@ def load_annotations(data_folder):
                         except:
                             d_mod = None
                         finally:
-                            d = parser.parse(d_mod)
-                            d_mod = d.strftime("%Y-%m-%d")
-                            publication["dateModified"] = d_mod
+                            if d_mod:
+                                d = parser.parse(d_mod)
+                                d_mod = d.strftime("%Y-%m-%d")
+                                publication["dateModified"] = d_mod
 
             #publication Types
             pt = root.findall('PubmedArticle/MedlineCitation/Article/PublicationTypeList/PublicationType')
@@ -171,7 +175,9 @@ def load_annotations(data_folder):
             print(publication)
             yield publication
         else:
-            print(f'Doc has no children: {pmid}')
+            logging.warning("No information for PubMed ID '%s'", pmid)
+            continue
+
     except ElementTree.ParseError:
-        print(f'{pmid} invalid doc')
+        logging.warning("Can't parse XML for PubMed ID '%s'", pmid)
         pass

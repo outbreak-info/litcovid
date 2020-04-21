@@ -1,2 +1,2 @@
 from .dump import LitCovidDumper
-# from .upload import PharmgkbUploader
+from .upload import LitCovidUploader
