@@ -34,13 +34,42 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
                         'type': 'integer'
                         },
                     'author': {
-                        'type': 'nested'
+                        'type': 'nested',
+                        'properties': {
+                            'name':{
+                                'type': 'text'
+                            },
+                            'givenName':{
+                                'type': 'text'
+                            },
+                            'familyName':{
+                                'type': 'text'
+                            },
+                            'affiliation':{
+                                'properties': {
+                                    'name':{
+                                        'type': 'text'
+                                    }
+                                }
+                            }
+                        }
                         },
                     'isBasedOn': {
-                        'type': 'nested'
+                        'type': 'text'
                         },
                     'funding': {
-                        'type': 'nested'
+                        'type': 'nested',
+                        'properties': {
+                            'funder':{
+                                'type': 'nested',
+                                'properties':{
+                                    'name': 'text'
+                                }
+                            },
+                            'identifier':{
+                                'type': 'text'
+                            }
+                        }
                         },
                     'license': {
                         'type': 'text'
