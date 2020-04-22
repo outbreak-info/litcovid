@@ -2,10 +2,9 @@ import os
 
 import requests
 import json
+import time
 from xml.etree import ElementTree
 from dateutil import parser
-
-import API_KEY from parser_config
 
 from biothings.utils.common import open_anyfile
 from biothings import config
@@ -14,9 +13,8 @@ logging = config.logger
 def load_annotations(data_folder):
 
     def getPumMedDataFor(pmid):
-        api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&api_key="+API_KEY+"&id="
+        api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&api_key="+config.PUBMED_API_KEY+"&id="
         results = {}
-        # print(pmid)
         r = requests.get(api_url+pmid)
 
         publication={
@@ -157,7 +155,6 @@ def load_annotations(data_folder):
                 yield publication
             else:
                 logging.warning("No information for PubMed ID '%s'", pmid)
-                continue
         except ElementTree.ParseError:
             logging.warning("Can't parse XML for PubMed ID '%s'", pmid)
             pass
@@ -171,11 +168,9 @@ def load_annotations(data_folder):
         # First item is a comment by provider
         dic.pop(0)
         data = dic[0]
-        # print("records in json: {}".format(len(data)))
-        # print("+++++++++++++++++++++++++++++")
 
     for i,rec in enumerate(data,start=1):
         # NCBI eutils API limits requests to 10/sec
         if i%10 ==0:
             time.sleep(2)
-        getPumMedDataFor(rec[pmid])
+        getPumMedDataFor(rec["pmid"])
