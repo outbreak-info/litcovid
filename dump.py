@@ -4,8 +4,6 @@ import biothings, config
 biothings.config_for_app(config)
 from config import DATA_ARCHIVE_ROOT
 
-from biothings.utils.common import uncompressall
-
 import biothings.hub.dataload.dumper
 
 

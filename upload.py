@@ -25,7 +25,7 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
 
     @classmethod
     def get_mapping(klass):
-        return         {
+        return  {
                 'properties': {
                     'abstract': {
                         'type': 'text'
