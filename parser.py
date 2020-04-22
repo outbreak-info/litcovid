@@ -6,14 +6,14 @@ import time
 from xml.etree import ElementTree
 from dateutil import parser
 
-import parser_config.PUBMED_API_KEY
+from .parser_config import PUBMED_API_KEY
 
 from biothings.utils.common import open_anyfile
 from biothings import config
 logging = config.logger
 
 def getPumMedDataFor(pmid):
-    api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&api_key="+str(parser_config.PUBMED_API_KEY)+"&id="
+    api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&api_key="+str(PUBMED_API_KEY)+"&id="
     url = api_url+str(pmid)
     r = requests.get(url)
 
