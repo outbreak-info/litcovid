@@ -6,7 +6,7 @@ import time
 from xml.etree import ElementTree
 from dateutil import parser
 
-from parser_config.PUBMED_API_KEY
+import parser_config.PUBMED_API_KEY
 
 from biothings.utils.common import open_anyfile
 from biothings import config
