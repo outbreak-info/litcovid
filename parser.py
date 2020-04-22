@@ -152,7 +152,7 @@ def load_annotations(data_folder):
                 for key in list(publication):
                     if not publication.get(key):del publication[key]
                 #final doc
-                yield publication
+                return publication
             else:
                 logging.warning("No information for PubMed ID '%s'", pmid)
         except ElementTree.ParseError:
@@ -173,4 +173,4 @@ def load_annotations(data_folder):
         # NCBI eutils API limits requests to 10/sec
         if i%10 ==0:
             time.sleep(2)
-        getPumMedDataFor(rec["pmid"])
+        yield getPumMedDataFor(rec["pmid"])
