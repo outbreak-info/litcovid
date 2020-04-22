@@ -46,6 +46,7 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
                                 'type': 'text'
                             },
                             'affiliation':{
+                                'type': 'nested',
                                 'properties': {
                                     'name':{
                                         'type': 'text'
