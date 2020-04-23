@@ -28,82 +28,85 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
         return  {
                     'mappings':{
                         'properties':{
-                        'abstract': {
-                            'type': 'text'
+                            'fields':{
+                                'type': 'string'
                             },
-                        'pmid': {
-                            'type': 'integer'
+                            'abstract': {
+                                'type': 'text'
                             },
-                        'author': {
-                            'type': 'nested',
-                            'properties': {
-                                'name':{
-                                    'type': 'text'
-                                },
-                                'givenName':{
-                                    'type': 'text'
-                                },
-                                'familyName':{
-                                    'type': 'text'
-                                },
-                                'affiliation':{
-                                    'type': 'nested',
-                                    'properties': {
-                                        'name':{
-                                            'type': 'text'
+                            'pmid': {
+                                'type': 'integer'
+                            },
+                            'author': {
+                                'type': 'nested',
+                                'properties': {
+                                    'name':{
+                                        'type': 'text'
+                                    },
+                                    'givenName':{
+                                        'type': 'text'
+                                    },
+                                    'familyName':{
+                                        'type': 'text'
+                                    },
+                                    'affiliation':{
+                                        'type': 'nested',
+                                        'properties': {
+                                            'name':{
+                                                'type': 'text'
+                                            }
                                         }
                                     }
                                 }
-                            }
                             },
-                        'isBasedOn': {
-                            'type': 'text'
+                            'isBasedOn': {
+                                'type': 'text'
                             },
-                        'funding': {
-                            'type': 'nested',
-                            'properties': {
-                                'funder':{
-                                    'type': 'nested',
-                                    'properties':{
-                                        'name': 'text'
+                            'funding': {
+                                'type': 'nested',
+                                'properties': {
+                                    'funder':{
+                                        'type': 'nested',
+                                        'properties':{
+                                            'name': 'text'
+                                        }
+                                    },
+                                    'identifier':{
+                                        'type': 'text'
                                     }
-                                },
-                                'identifier':{
-                                    'type': 'text'
                                 }
-                            }
                             },
-                        'license': {
-                            'type': 'text'
+                            'license': {
+                                'type': 'text'
                             },
-                        'keywords': {
-                            'normalizer': 'keyword_lowercase_normalizer',
-                            'type': 'keyword'
+                            'keywords': {
+                                'normalizer': 'keyword_lowercase_normalizer',
+                                'type': 'keyword'
                             },
-                        'publicationType': {
-                            'normalizer': 'keyword_lowercase_normalizer',
-                            'type': 'keyword'
+                            'publicationType': {
+                                'normalizer': 'keyword_lowercase_normalizer',
+                                'type': 'keyword'
                             },
-                        'name': {
-                            'type': 'text'
+                            'name': {
+                                'type': 'text'
                             },
-                        'journalName': {
-                            'type': 'text'
+                            'journalName': {
+                                'type': 'text'
                             },
-                        'identifier': {
-                            'type': 'text'
+                            'identifier': {
+                                'type': 'text'
                             },
-                        'doi': {
-                            'type': 'text'
+                            'doi': {
+                                'type': 'text'
                             },
-                        'datePublished': {
-                            'type': 'date'
+                            'datePublished': {
+                                'type': 'date'
                             },
-                        'dateModified': {
-                            'type': 'date'
+                            'dateModified': {
+                                'type': 'date'
                             },
-                        'issueNumber': {
-                            'type': 'text'
+                            'issueNumber': {
+                                'type': 'text'
                             }
                         }
                     }
