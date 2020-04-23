@@ -174,4 +174,4 @@ def load_annotations(data_folder):
         # NCBI eutils API limits requests to 10/sec
         if i%10 ==0:
             time.sleep(2)
-        yield json.dumps(getPumMedDataFor(rec["pmid"]))
+        yield getPumMedDataFor(rec["pmid"])

@@ -27,7 +27,7 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
     def get_mapping(klass):
         return  {
                     'fields':{
-                        'type': 'string'
+                        'type': 'text'
                     },
                     'abstract': {
                         'type': 'text'
@@ -66,7 +66,9 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
                             'funder':{
                                 'type': 'nested',
                                 'properties':{
-                                    'name': 'text'
+                                    'name': {
+                                        'type': 'text'
+                                    }
                                 }
                             },
                             'identifier':{
