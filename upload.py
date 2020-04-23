@@ -26,81 +26,85 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
     @classmethod
     def get_mapping(klass):
         return  {
-                'abstract': {
-                    'type': 'text'
-                    },
-                'pmid': {
-                    'type': 'integer'
-                    },
-                'author': {
-                    'type': 'nested',
-                    'properties': {
-                        'name':{
+                    'mappings':{
+                        'properties':{
+                        'abstract': {
                             'type': 'text'
-                        },
-                        'givenName':{
-                            'type': 'text'
-                        },
-                        'familyName':{
-                            'type': 'text'
-                        },
-                        'affiliation':{
+                            },
+                        'pmid': {
+                            'type': 'integer'
+                            },
+                        'author': {
                             'type': 'nested',
                             'properties': {
                                 'name':{
                                     'type': 'text'
+                                },
+                                'givenName':{
+                                    'type': 'text'
+                                },
+                                'familyName':{
+                                    'type': 'text'
+                                },
+                                'affiliation':{
+                                    'type': 'nested',
+                                    'properties': {
+                                        'name':{
+                                            'type': 'text'
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    }
-                    },
-                'isBasedOn': {
-                    'type': 'text'
-                    },
-                'funding': {
-                    'type': 'nested',
-                    'properties': {
-                        'funder':{
-                            'type': 'nested',
-                            'properties':{
-                                'name': 'text'
-                            }
-                        },
-                        'identifier':{
+                            },
+                        'isBasedOn': {
                             'type': 'text'
+                            },
+                        'funding': {
+                            'type': 'nested',
+                            'properties': {
+                                'funder':{
+                                    'type': 'nested',
+                                    'properties':{
+                                        'name': 'text'
+                                    }
+                                },
+                                'identifier':{
+                                    'type': 'text'
+                                }
+                            }
+                            },
+                        'license': {
+                            'type': 'text'
+                            },
+                        'keywords': {
+                            'normalizer': 'keyword_lowercase_normalizer',
+                            'type': 'keyword'
+                            },
+                        'publicationType': {
+                            'normalizer': 'keyword_lowercase_normalizer',
+                            'type': 'keyword'
+                            },
+                        'name': {
+                            'type': 'text'
+                            },
+                        'journalName': {
+                            'type': 'text'
+                            },
+                        'identifier': {
+                            'type': 'text'
+                            },
+                        'doi': {
+                            'type': 'text'
+                            },
+                        'datePublished': {
+                            'type': 'date'
+                            },
+                        'dateModified': {
+                            'type': 'date'
+                            },
+                        'issueNumber': {
+                            'type': 'text'
+                            }
                         }
-                    }
-                    },
-                'license': {
-                    'type': 'text'
-                    },
-                'keywords': {
-                    'normalizer': 'keyword_lowercase_normalizer',
-                    'type': 'keyword'
-                    },
-                'publicationType': {
-                    'normalizer': 'keyword_lowercase_normalizer',
-                    'type': 'keyword'
-                    },
-                'name': {
-                    'type': 'text'
-                    },
-                'journalName': {
-                    'type': 'text'
-                    },
-                'identifier': {
-                    'type': 'text'
-                    },
-                'doi': {
-                    'type': 'text'
-                    },
-                'datePublished': {
-                    'type': 'date'
-                    },
-                'dateModified': {
-                    'type': 'date'
-                    },
-                'issueNumber': {
-                    'type': 'text'
                     }
                 }
