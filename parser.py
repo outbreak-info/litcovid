@@ -12,7 +12,7 @@ from biothings.utils.common import open_anyfile
 from biothings import config
 logging = config.logger
 
-def getPumMedDataFor(pmid):
+def getPubMedDataFor(pmid):
     api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&api_key="+str(PUBMED_API_KEY)+"&id="
     url = api_url+str(pmid)
     r = requests.get(url)
@@ -22,7 +22,7 @@ def getPumMedDataFor(pmid):
             "schema":"http://schema.org/",
             "outbreak":"https://discovery.biothings.io/view/outbreak/",
         },
-        "@type":'outbreak:Publication',
+        "@type":'Publication',
         "keywords":[],
         "author":[],
         "funding":[],
@@ -174,4 +174,4 @@ def load_annotations(data_folder):
         # NCBI eutils API limits requests to 10/sec
         if i%10 ==0:
             time.sleep(2)
-        yield getPumMedDataFor(rec["pmid"])
+        yield getPubMedDataFor(rec["pmid"])

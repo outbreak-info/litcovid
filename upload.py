@@ -102,10 +102,10 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
                         'type': 'text'
                     },
                     'datePublished': {
-                        'type': 'date'
+                        'type': 'keyword'
                     },
                     'dateModified': {
-                        'type': 'date'
+                        'type': 'keyword'
                     },
                     'issueNumber': {
                         'type': 'text'
