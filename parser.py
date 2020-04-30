@@ -12,6 +12,9 @@ from biothings.utils.common import open_anyfile
 from biothings import config
 logging = config.logger
 
+import requests_cache
+requests_cache.install_cache('litcovid_cache')
+
 def getPubMedDataFor(pmid):
     api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&api_key="+str(PUBMED_API_KEY)+"&id="
     url = api_url+str(pmid)
