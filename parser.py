@@ -13,6 +13,7 @@ from biothings import config
 logging = config.logger
 
 import requests_cache
+
 requests_cache.install_cache('litcovid_cache')
 
 def getPubMedDataFor(pmid):
