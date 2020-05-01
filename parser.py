@@ -19,7 +19,13 @@ requests_cache.install_cache('litcovid_cache')
 def getPubMedDataFor(pmid):
     api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&api_key="+str(PUBMED_API_KEY)+"&id="
     url = api_url+str(pmid)
-    r = requests.get(url)
+    try:
+        r = requests.get(url)
+        doc = parseXMLTree(r.content)
+        if doc:
+            return doc
+    except requests.exceptions.ConnectionError:
+        logging.warning("Exceeded request for ID '%s'", pmid)
 
     publication={
         "@context": {
@@ -34,8 +40,9 @@ def getPubMedDataFor(pmid):
         "isBasedOn":[]
     }
 
+def parseXMLTree(res):
     try:
-        root = ElementTree.fromstring(r.content)
+        root = ElementTree.fromstring(res)
         has_children = list(root.iter())
         if has_children:
             #Single Value
@@ -158,6 +165,7 @@ def getPubMedDataFor(pmid):
             #final doc
             return publication
         else:
+            return False
             logging.warning("No information for PubMed ID '%s'", pmid)
     except ElementTree.ParseError:
         logging.warning("Can't parse XML for PubMed ID '%s'", pmid)
@@ -176,5 +184,7 @@ def load_annotations(data_folder):
 
     for i,rec in enumerate(data,start=1):
         # NCBI eutils API limits requests to 10/sec
-        time.sleep(.1)
+        if i%10 == 0:
+            time.sleep(1)
+        time.sleep(.2)
         yield getPubMedDataFor(rec["pmid"])
