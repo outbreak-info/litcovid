@@ -25,7 +25,7 @@ def getPubMedDataFor(pmid):
         if doc:
             return doc
     except requests.exceptions.ConnectionError:
-        logging.warning("Exceeded request for ID '%s'", pmid)
+        logging.warning("Exceeded requests foe an ID")
 
     publication={
         "@context": {
