@@ -21,11 +21,11 @@ def getPubMedDataFor(pmid):
     url = api_url+str(pmid)
     try:
         r = requests.get(url)
-        doc = parseXMLTree(r.content)
+        doc = parseXMLTree(r.content,pmid)
         if doc:
             return doc
     except requests.exceptions.ConnectionError:
-        logging.warning("Exceeded requests foe an ID")
+        logging.warning("Exceeded request for ID '%s'", pmid)
 
     publication={
         "@context": {
@@ -40,7 +40,7 @@ def getPubMedDataFor(pmid):
         "isBasedOn":[]
     }
 
-def parseXMLTree(res):
+def parseXMLTree(res,pmid):
     try:
         root = ElementTree.fromstring(res)
         has_children = list(root.iter())
