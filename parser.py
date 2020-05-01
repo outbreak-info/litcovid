@@ -176,6 +176,5 @@ def load_annotations(data_folder):
 
     for i,rec in enumerate(data,start=1):
         # NCBI eutils API limits requests to 10/sec
-        if i%10 ==0:
-            time.sleep(2)
+        time.sleep(.1)
         yield getPubMedDataFor(rec["pmid"])
