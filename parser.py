@@ -15,6 +15,7 @@ logging = config.logger
 import requests_cache
 
 requests_cache.install_cache('litcovid_cache')
+logging.debug("requests_cache: %s", requests_cache.get_cache().responses.filename)
 
 def getPubMedDataFor(pmid):
     api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&api_key="+str(PUBMED_API_KEY)+"&id="
@@ -23,9 +24,11 @@ def getPubMedDataFor(pmid):
         r = requests.get(url)
         doc = parseXMLTree(r.content,pmid)
         if doc:
+            doc['from_cache'] = getattr(r, 'from_cache', None)
             return doc
     except requests.exceptions.ConnectionError:
         logging.warning("Exceeded request for ID '%s'", pmid)
+        raise
 
 def parseXMLTree(res,pmid):
 
@@ -183,9 +186,16 @@ def load_annotations(data_folder):
         # First item is a comment by provider
         data = data_list[1]
 
-    for i,rec in enumerate(data,start=1):
+    doc_id_set = set()
+    for i, rec in enumerate(data,start=1):
         # NCBI eutils API limits requests to 10/sec
-        if i%10 == 0:
-            time.sleep(1)
-        time.sleep(.2)
-        yield getPubMedDataFor(rec["pmid"])
+        if i % 100 == 0:
+            logging.info("litcovid.parser.load_annotations progress %s", i)
+
+        doc = getPubMedDataFor(rec["pmid"])
+        if not doc['from_cache']:
+            time.sleep(.2)
+        doc.pop('from_cache')
+        if doc['_id'] not in doc_id_set:
+            yield doc
+        doc_id_set.add(doc['_id'])
