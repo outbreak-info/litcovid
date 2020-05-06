@@ -3,6 +3,7 @@ import os
 import requests
 import json
 import time
+import datetime
 from xml.etree import ElementTree
 from dateutil import parser
 
@@ -14,7 +15,9 @@ logging = config.logger
 
 import requests_cache
 
-requests_cache.install_cache('litcovid_cache')
+expire_after = timedelta(days=7)
+
+requests_cache.install_cache('litcovid_cache',expire_after=expire_after)
 logging.debug("requests_cache: %s", requests_cache.get_cache().responses.filename)
 
 def getPubMedDataFor(pmid):
@@ -60,6 +63,7 @@ def parseXMLTree(res,pmid):
             publication["abstract"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/Abstract/AbstractText'), 'text',None)
             publication["license"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/Abstract/CopyrightInformation'), 'text',None)
             publication["journalName"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/Journal/Title'), 'text',None)
+            publication["volumeNumber"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/Volume'), 'text',None)
             publication["journalAbbreviation"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/Journal/ISOAbbreviation'), 'text',None)
             publication["issueNumber"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/Journal/ISSN'), 'text',None)
             #With fallback

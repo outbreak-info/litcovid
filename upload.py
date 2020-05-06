@@ -40,7 +40,6 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
                 'type': 'integer'
             },
             'author': {
-                # 'type': 'nested',
                 'properties': {
                     'name': {
                         'type': 'text'
@@ -61,7 +60,6 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
                 }
             },
             "isBasedOn": {
-                # "type": "nested",
                 "properties": {
                     "@type": {
                         "normalizer": "keyword_lowercase_normalizer",
@@ -85,7 +83,6 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
                 }
             },
             "relatedTo": {
-                # "type": "nested",
                 "properties": {
                     "@type": {
                         "normalizer": "keyword_lowercase_normalizer",
@@ -106,7 +103,6 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
                 }
             },
             'funding': {
-                # 'type': 'nested',
                 'properties': {
                     'funder': {
                         'properties': {
@@ -158,7 +154,6 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
                 'type': 'text'
             },
             "curatedBy": {
-                # "type": "nested",
                 "properties": {
                     "@type": {
                         "normalizer": "keyword_lowercase_normalizer",
