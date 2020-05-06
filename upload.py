@@ -8,7 +8,7 @@ biothings.config_for_app(config)
 
 # when code is exported, import becomes relative
 try:
-    from litcovid_parser.parser import load_annotations as parser_func
+    from litcovid.parser import load_annotations as parser_func
 except ImportError:
     from .parser import load_annotations as parser_func
 
