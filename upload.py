@@ -52,7 +52,6 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
                         'type': 'text'
                     },
                     'affiliation': {
-                        # 'type': 'nested',
                         'properties': {
                             'name': {
                                 'type': 'text'
@@ -61,14 +60,55 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
                     }
                 }
             },
-            'isBasedOn': {
-                'type': 'text'
+            "isBasedOn": {
+                # "type": "nested",
+                "properties": {
+                    "@type": {
+                        "normalizer": "keyword_lowercase_normalizer",
+                        "type": "keyword"
+                    },
+                    "identifier": {
+                        "type": "text"
+                    },
+                    "name": {
+                        "type": "text"
+                    },
+                    "description": {
+                        "type": "text"
+                    },
+                    "url": {
+                        "type": "text"
+                    },
+                    "datePublished": {
+                        "type": "text"
+                    }
+                }
+            },
+            "relatedTo": {
+                # "type": "nested",
+                "properties": {
+                    "@type": {
+                        "normalizer": "keyword_lowercase_normalizer",
+                        "type": "keyword"
+                    },
+                    "identifier": {
+                        "type": "text"
+                    },
+                    "pmid": {
+                        "type": "text"
+                    },
+                    "url": {
+                        "type": "text"
+                    },
+                    "citation": {
+                        "type": "text"
+                    }
+                }
             },
             'funding': {
                 # 'type': 'nested',
                 'properties': {
                     'funder': {
-                        # 'type': 'nested',
                         'properties': {
                             'name': {
                                 'type': 'text'
@@ -119,21 +159,21 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
             },
             "curatedBy": {
                 # "type": "nested",
-                        "properties": {
-                            "@type": {
-                                "normalizer": "keyword_lowercase_normalizer",
-                                "type": "keyword"
-                            },
-                            "name": {
-                                "type": "text"
-                            },
-                            "url": {
-                                "type": "text"
-                            },
-                            "versionDate": {
-                                "normalizer": "keyword_lowercase_normalizer",
-                                "type": "keyword"
-                            },
-                        }
+                "properties": {
+                    "@type": {
+                        "normalizer": "keyword_lowercase_normalizer",
+                        "type": "keyword"
+                    },
+                    "name": {
+                        "type": "text"
+                    },
+                    "url": {
+                        "type": "text"
+                    },
+                    "versionDate": {
+                        "normalizer": "keyword_lowercase_normalizer",
+                        "type": "keyword"
+                    },
+                }
             },
         }
