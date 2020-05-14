@@ -1,3 +1,4 @@
+import os
 import biothings.hub.dataload.uploader
 
 import biothings
