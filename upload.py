@@ -15,7 +15,20 @@ except ImportError:
 class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
 
     name = "litcovid"
-    __metadata__ = {"src_meta": {}}
+    __metadata__ = {
+        "src_meta": {
+            "author": ⊖{
+                "name": "Marco Cano",
+                "url": "https://github.com/marcodarko"
+            },
+            "code": ⊖{
+                "branch": "master",
+                "repo": "https://github.com/marcodarko/litcovid.git"
+            },
+            "url": "https://www.ncbi.nlm.nih.gov/research/coronavirus/ ",
+            "license": "https://www.ncbi.nlm.nih.gov/home/about/policies/"
+        }
+    }
     idconverter = None
     storage_class = biothings.hub.dataload.storage.BasicStorage
 
