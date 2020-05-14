@@ -17,11 +17,11 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
     name = "litcovid"
     __metadata__ = {
         "src_meta": {
-            "author": ⊖{
+            "author":{
                 "name": "Marco Cano",
                 "url": "https://github.com/marcodarko"
             },
-            "code": ⊖{
+            "code":{
                 "branch": "master",
                 "repo": "https://github.com/marcodarko/litcovid.git"
             },
