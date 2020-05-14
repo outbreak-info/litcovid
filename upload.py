@@ -37,8 +37,8 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
         return parser_func(data_folder)
 
     def getMappingFile():
-    r = requests.get('https://raw.githubusercontent.com/SuLab/outbreak.info-resources/master/outbreak_resources_es_mapping.json').text
-    return r
+        r = requests.get('https://raw.githubusercontent.com/SuLab/outbreak.info-resources/master/outbreak_resources_es_mapping.json').text
+        return r
 
     @classmethod
     def get_mapping(klass):
