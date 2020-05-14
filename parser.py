@@ -17,8 +17,8 @@ import requests_cache
 
 expire_after = timedelta(days=7)
 
-requests_cache.install_cache('litcovid_cache',expire_after=expire_after)
-logging.debug("requests_cache: %s", requests_cache.get_cache().responses.filename)
+# requests_cache.install_cache('litcovid_cache',expire_after=expire_after)
+# logging.debug("requests_cache: %s", requests_cache.get_cache().responses.filename)
 
 def getPubMedDataFor(pmid):
     api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&api_key="+str(PUBMED_API_KEY)+"&id="
@@ -64,18 +64,23 @@ def parseXMLTree(res,pmid):
             publication["license"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/Abstract/CopyrightInformation'), 'text',None)
             publication["journalName"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/Journal/Title'), 'text',None)
             publication["volumeNumber"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/Volume'), 'text',None)
+            publication["pagination"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/Journal/Pagination/MedlinePgn'), 'text',None)
             publication["journalAbbreviation"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/Journal/ISOAbbreviation'), 'text',None)
             publication["issueNumber"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/Journal/ISSN'), 'text',None)
             #With fallback
-            publication["doi"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/ELocationID'), 'text',None)
-            if not publication.get('doi'):
+
+            try:
                 ids = root.findall('PubmedArticle/PubmedData/ArticleIdList/ArticleId')
                 for item in ids:
                     if item.attrib.get('IdType') == 'doi':
                         publication["doi"] = getattr(item, 'text',None)
-            else:
+            except:
+                publication["doi"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/ELocationID'), 'text',None)
+
+            if publication.get('doi'):                
                 doi = publication["doi"]
                 publication["url"]= f"https://www.doi.org/{doi}"
+
             #Authors
             auths = root.find('PubmedArticle/MedlineCitation/Article/AuthorList')
             if auths is not None:
@@ -99,7 +104,7 @@ def parseXMLTree(res,pmid):
                     #cleanup author
                     for key in author:
                         if author[key] is None: del author[key]
-                publication["author"].append(author)
+                    publication["author"].append(author)
 
             #Funding
             grants = root.findall('PubmedArticle/MedlineCitation/Article/GrantList/Grant')
@@ -191,15 +196,19 @@ def load_annotations(data_folder):
         data = data_list[1]
 
     doc_id_set = set()
-    for i, rec in enumerate(data,start=1):
-        # NCBI eutils API limits requests to 10/sec
-        if i % 100 == 0:
-            logging.info("litcovid.parser.load_annotations progress %s", i)
+    with requests_cache.enabled('litcovid_cache', expire_after=expire_after):
+        logging.debug("requests_cache: %s", requests_cache.get_cache().responses.filename)
+        for i, rec in enumerate(data,start=1):
+            # NCBI eutils API limits requests to 10/sec
+            if i % 100 == 0:
+                logging.info("litcovid.parser.load_annotations progress %s", i)
 
-        doc = getPubMedDataFor(rec["pmid"])
-        if not doc['from_cache']:
-            time.sleep(.2)
-        doc.pop('from_cache')
-        if doc['_id'] not in doc_id_set:
-            yield doc
-        doc_id_set.add(doc['_id'])
+            doc = getPubMedDataFor(rec["pmid"])
+            if not doc['from_cache']:
+                time.sleep(.2)
+            doc.pop('from_cache')
+            if doc['_id'] not in doc_id_set:
+                yield doc
+            doc_id_set.add(doc['_id'])
+        requests_cache.core.remove_expired_responses()
+    # TODO: check they are disabled

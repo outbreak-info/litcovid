@@ -1,5 +1,4 @@
 import biothings.hub.dataload.uploader
-import os
 
 import biothings
 import config

@@ -16,6 +16,19 @@ class LitCovidDumper(biothings.hub.dataload.dumper.LastModifiedHTTPDumper):
     SCHEDULE = None  # crontab format schedule, if None, won't be scheduled
     # LitCovid will update docs daily on a schedule TODO
 
+    # __metadata__ = {
+    #     "src_meta": {
+    #         "author": ⊖{
+    #             "name": "Marco Cano",
+    #             "url": "https://github.com/marcodarko"
+    #         },
+    #         "code": ⊖{
+    #             "branch": "master",
+    #             "repo": "https://github.com/marcodarko/litcovid.git"
+    #         }
+    #     }
+    # }
+
     SRC_URLS = [
         'https://ftp.ncbi.nlm.nih.gov/pub/lu/LitCovid/litcovid2BioCJSON.gz'
     ]
