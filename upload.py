@@ -43,150 +43,149 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
 
     @classmethod
     def get_mapping(klass):
-        return getMappingFile()
-        # return {
-        #     'fields': {
-        #         'type': 'text'
-        #     },
-        #     'abstract': {
-        #         'type': 'text'
-        #     },
-        #     '@type': {
-        #         'type': 'text'
-        #     },
-        #     'pmid': {
-        #         'type': 'integer'
-        #     },
-        #     'author': {
-        #         'properties': {
-        #             'name': {
-        #                 'type': 'text'
-        #             },
-        #             'givenName': {
-        #                 'type': 'text'
-        #             },
-        #             'familyName': {
-        #                 'type': 'text'
-        #             },
-        #             'affiliation': {
-        #                 'properties': {
-        #                     'name': {
-        #                         'type': 'text'
-        #                     }
-        #                 }
-        #             }
-        #         }
-        #     },
-        #     "isBasedOn": {
-        #         "properties": {
-        #             "@type": {
-        #                 "normalizer": "keyword_lowercase_normalizer",
-        #                 "type": "keyword"
-        #             },
-        #             "identifier": {
-        #                 "type": "text"
-        #             },
-        #             "name": {
-        #                 "type": "text"
-        #             },
-        #             "description": {
-        #                 "type": "text"
-        #             },
-        #             "url": {
-        #                 "type": "text"
-        #             },
-        #             "datePublished": {
-        #                 "type": "text"
-        #             }
-        #         }
-        #     },
-        #     "relatedTo": {
-        #         "properties": {
-        #             "@type": {
-        #                 "normalizer": "keyword_lowercase_normalizer",
-        #                 "type": "keyword"
-        #             },
-        #             "identifier": {
-        #                 "type": "text"
-        #             },
-        #             "pmid": {
-        #                 "type": "text"
-        #             },
-        #             "url": {
-        #                 "type": "text"
-        #             },
-        #             "citation": {
-        #                 "type": "text"
-        #             }
-        #         }
-        #     },
-        #     'funding': {
-        #         'properties': {
-        #             'funder': {
-        #                 'properties': {
-        #                     'name': {
-        #                         'type': 'text'
-        #                     }
-        #                 }
-        #             },
-        #             'identifier': {
-        #                 'type': 'text'
-        #             }
-        #         }
-        #     },
-        #     'license': {
-        #         'type': 'text'
-        #     },
-        #     'keywords': {
-        #         'normalizer': 'keyword_lowercase_normalizer',
-        #         'type': 'keyword',
-        #                 'copy_to': ['all']
-        #     },
-        #     'publicationType': {
-        #         'normalizer': 'keyword_lowercase_normalizer',
-        #         'type': 'keyword',
-        #                 'copy_to': ['all']
-        #     },
-        #     'name': {
-        #         'type': 'text'
-        #     },
-        #     'journalName': {
-        #         'type': 'text'
-        #     },
-        #     'identifier': {
-        #         'type': 'text'
-        #     },
-        #     'doi': {
-        #         'type': 'text'
-        #     },
-        #     'datePublished': {
-        #         'type': 'keyword'
-        #     },
-        #     'dateModified': {
-        #         'type': 'keyword'
-        #     },
-        #     'issueNumber': {
-        #         'type': 'text'
-        #     },
-        #     'volumeNumber': {
-        #         'type': 'text'
-        #     },
-        #     "curatedBy": {
-        #         "properties": {
-        #             "@type": {
-        #                 "normalizer": "keyword_lowercase_normalizer",
-        #                 "type": "keyword"
-        #             },
-        #             "name": {
-        #                 "type": "text"
-        #             },
-        #             "url": {
-        #                 "type": "text"
-        #             },
-        #             "versionDate": {
-        #                 "normalizer": "keyword_lowercase_normalizer",
-        #                 "type": "keyword"
-        #             },
-        #         }
-        #     },
-        # }
+        return {
+            'fields': {
+                'type': 'text'
+            },
+            'abstract': {
+                'type': 'text'
+            },
+            '@type': {
+                'type': 'text'
+            },
+            'pmid': {
+                'type': 'integer'
+            },
+            'author': {
+                'properties': {
+                    'name': {
+                        'type': 'text'
+                    },
+                    'givenName': {
+                        'type': 'text'
+                    },
+                    'familyName': {
+                        'type': 'text'
+                    },
+                    'affiliation': {
+                        'properties': {
+                            'name': {
+                                'type': 'text'
+                            }
+                        }
+                    }
+                }
+            },
+            "isBasedOn": {
+                "properties": {
+                    "@type": {
+                        "normalizer": "keyword_lowercase_normalizer",
+                        "type": "keyword"
+                    },
+                    "identifier": {
+                        "type": "text"
+                    },
+                    "name": {
+                        "type": "text"
+                    },
+                    "description": {
+                        "type": "text"
+                    },
+                    "url": {
+                        "type": "text"
+                    },
+                    "datePublished": {
+                        "type": "text"
+                    }
+                }
+            },
+            "relatedTo": {
+                "properties": {
+                    "@type": {
+                        "normalizer": "keyword_lowercase_normalizer",
+                        "type": "keyword"
+                    },
+                    "identifier": {
+                        "type": "text"
+                    },
+                    "pmid": {
+                        "type": "text"
+                    },
+                    "url": {
+                        "type": "text"
+                    },
+                    "citation": {
+                        "type": "text"
+                    }
+                }
+            },
+            'funding': {
+                'properties': {
+                    'funder': {
+                        'properties': {
+                            'name': {
+                                'type': 'text'
+                            }
+                        }
+                    },
+                    'identifier': {
+                        'type': 'text'
+                    }
+                }
+            },
+            'license': {
+                'type': 'text'
+            },
+            'keywords': {
+                'normalizer': 'keyword_lowercase_normalizer',
+                'type': 'keyword',
+                        'copy_to': ['all']
+            },
+            'publicationType': {
+                'normalizer': 'keyword_lowercase_normalizer',
+                'type': 'keyword',
+                        'copy_to': ['all']
+            },
+            'name': {
+                'type': 'text'
+            },
+            'journalName': {
+                'type': 'text'
+            },
+            'identifier': {
+                'type': 'text'
+            },
+            'doi': {
+                'type': 'text'
+            },
+            'datePublished': {
+                'type': 'keyword'
+            },
+            'dateModified': {
+                'type': 'keyword'
+            },
+            'issueNumber': {
+                'type': 'text'
+            },
+            'volumeNumber': {
+                'type': 'text'
+            },
+            "curatedBy": {
+                "properties": {
+                    "@type": {
+                        "normalizer": "keyword_lowercase_normalizer",
+                        "type": "keyword"
+                    },
+                    "name": {
+                        "type": "text"
+                    },
+                    "url": {
+                        "type": "text"
+                    },
+                    "versionDate": {
+                        "normalizer": "keyword_lowercase_normalizer",
+                        "type": "keyword"
+                    },
+                }
+            },
+        }
