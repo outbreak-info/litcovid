@@ -1,6 +1,7 @@
 import os
 import biothings.hub.dataload.uploader
 
+import requests
 import biothings
 import config
 biothings.config_for_app(config)
