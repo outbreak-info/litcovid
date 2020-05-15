@@ -41,13 +41,17 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
         self.logger.info("Load data from directory: '%s'" % data_folder)
         return parser_func(data_folder)
 
-    def getMappingFile(url, vars):
-        r = requests.get(url)
-        if(r.status_code == 200):
-            mapping = r.json()
-            mapping_dict = { key: mapping[key] for key in vars }
-            return mapping_dict
+    # def getMappingFile(url, vars):
+    #     r = requests.get(url)
+    #     if(r.status_code == 200):
+    #         mapping = r.json()
+    #         mapping_dict = { key: mapping[key] for key in vars }
+    #         return mapping_dict
 
     @classmethod
     def get_mapping(klass):
-        return (getMappingFile(MAP_URL, MAP_VARS))
+        r = requests.get(MAP_URL)
+        if(r.status_code == 200):
+            mapping = r.json()
+            mapping_dict = { key: mapping[key] for key in MAP_VARS }
+            return mapping_dict
