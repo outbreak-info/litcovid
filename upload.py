@@ -41,7 +41,7 @@ class LitCovidUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
         return parser_func(data_folder)
 
     def getMappingFile(url, vars):
-        r = requests.get('https://raw.githubusercontent.com/SuLab/outbreak.info-resources/master/outbreak_resources_es_mapping.json')
+        r = requests.get(url)
         if(r.status_code == 200):
             mapping = r.json()
             mapping_dict = { key: mapping[key] for key in vars }
