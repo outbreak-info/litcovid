@@ -15,7 +15,7 @@ logging = config.logger
 
 import requests_cache
 
-expire_after = timedelta(days=7)
+expire_after = datetime.timedelta(days=7)
 
 # requests_cache.install_cache('litcovid_cache',expire_after=expire_after)
 # logging.debug("requests_cache: %s", requests_cache.get_cache().responses.filename)
@@ -77,7 +77,7 @@ def parseXMLTree(res,pmid):
             except:
                 publication["doi"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/ELocationID'), 'text',None)
 
-            if publication.get('doi'):                
+            if publication.get('doi'):
                 doi = publication["doi"]
                 publication["url"]= f"https://www.doi.org/{doi}"
 
