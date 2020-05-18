@@ -60,7 +60,14 @@ def parseXMLTree(res,pmid):
             publication["name"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/ArticleTitle'), 'text',None)
             publication["identifier"] = getattr(root.find('PubmedArticle/MedlineCitation/PMID'), 'text',None)
             publication["pmid"] = getattr(root.find('PubmedArticle/MedlineCitation/PMID'), 'text',None)
-            publication["abstract"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/Abstract/AbstractText'), 'text',None)
+            #Abstract
+            try:
+                abs = root.find('PubmedArticle/MedlineCitation/Article/Abstract/AbstractText')
+                abs = ''.join(abs.itertext())
+                publication["abstract"] = abs
+            except:
+                publication["abstract"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/Abstract/AbstractText'), 'text',None)
+
             publication["license"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/Abstract/CopyrightInformation'), 'text',None)
             publication["journalName"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/Journal/Title'), 'text',None)
             publication["volumeNumber"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/Volume'), 'text',None)
