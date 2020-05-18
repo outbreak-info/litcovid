@@ -126,11 +126,21 @@ def parseXMLTree(res,pmid):
 
             #Citations
             citations = root.findall('PubmedArticle/PubmedData/ReferenceList/Reference')
-            for item in citations:
-                details = item.iter()
-                for cit in details:
-                    if cit.tag == "Citation":
-                        publication["isBasedOn"].append(cit.text)
+            if citations:
+                for item in citations:
+                    details = item.iter()
+                    citObj = {"@type":"Publication"}
+                    for cit in details:
+                        if cit.tag == "Citation":
+                            citObj['citation']= cit.text
+                        if cit.tag == "ArticleIdList":
+                            cid = cit.find('ArticleId')
+                            if cid.text:
+                                citObj['pmid']= cid.text
+                                citObj['identifier']= cid.text
+                    publication["isBasedOn"].append(citObj)
+            else:
+                del publication["isBasedOn"]
             #Pub Date
             mm = getattr(root.find('PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Month'), 'text',None)
             yy = getattr(root.find('PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Year'), 'text',None)
