@@ -56,6 +56,7 @@ def parseXMLTree(res,pmid):
             publication["_id"] = f"pmid{pmid}"
             publication["curatedBy"] = {"@type":"schema:WebSite",
                                         "name":"litcovid",
+                                        "curationDate": datetime.date.today().strftime("%Y-%m-%d"),
                                         "url": f"https://www.ncbi.nlm.nih.gov/research/coronavirus/publication/{pmid}"}
             publication["name"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/ArticleTitle'), 'text',None)
             publication["identifier"] = getattr(root.find('PubmedArticle/MedlineCitation/PMID'), 'text',None)
@@ -77,7 +78,7 @@ def parseXMLTree(res,pmid):
             except:
                 publication["doi"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/ELocationID'), 'text',None)
 
-            if publication.get('doi'):                
+            if publication.get('doi'):
                 doi = publication["doi"]
                 publication["url"]= f"https://www.doi.org/{doi}"
 
