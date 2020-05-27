@@ -56,6 +56,7 @@ def parseXMLTree(res,pmid):
             publication["_id"] = f"pmid{pmid}"
             publication["curatedBy"] = {"@type":"schema:WebSite",
                                         "name":"litcovid",
+                                        "curationDate": datetime.date.today().strftime("%Y-%m-%d"),
                                         "url": f"https://www.ncbi.nlm.nih.gov/research/coronavirus/publication/{pmid}"}
             publication["name"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/ArticleTitle'), 'text',None)
             publication["identifier"] = getattr(root.find('PubmedArticle/MedlineCitation/PMID'), 'text',None)
