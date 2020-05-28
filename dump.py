@@ -13,8 +13,8 @@ class LitCovidDumper(biothings.hub.dataload.dumper.LastModifiedHTTPDumper):
     # override in subclass accordingly
     SRC_ROOT_FOLDER = os.path.join(DATA_ARCHIVE_ROOT, SRC_NAME)
 
-    SCHEDULE = None  # crontab format schedule, if None, won't be scheduled
-    # LitCovid will update docs daily on a schedule TODO
+    # crontab format schedule, if None, won't be scheduled
+    SCHEDULE = "30 14 * * *" # daily at 14:30UTC/7:30PT    
 
     __metadata__ = {
         "src_meta": {
