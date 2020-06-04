@@ -160,9 +160,12 @@ def parseXMLTree(res,pmid):
                 pass
             finally:
                 if dp:
-                    d = parser.parse(dp)
-                    dp = d.strftime("%Y-%m-%d")
-                    publication["datePublished"] = dp
+                    try:
+                        d = parser.parse(dp)
+                        dp = d.strftime("%Y-%m-%d")
+                        publication["datePublished"] = dp
+                    except:
+                        logging.warning("Publication date '%s' can't be parsed for PubMed ID '%s'", dp, pmid)
             #Date Modified
             dates = root.findall('PubmedArticle/PubmedData/History/PubMedPubDate')
             for date in dates:
@@ -178,9 +181,12 @@ def parseXMLTree(res,pmid):
                             d_mod = None
                         finally:
                             if d_mod:
-                                d = parser.parse(d_mod)
-                                d_mod = d.strftime("%Y-%m-%d")
-                                publication["dateModified"] = d_mod
+                                try:
+                                    d = parser.parse(d_mod)
+                                    d_mod = d.strftime("%Y-%m-%d")
+                                    publication["dateModified"] = d_mod
+                                except:
+                                    logging.warning("Modified date '%s' can't be parsed for PubMed ID '%s'", d_mod, pmid)
 
             #publication Types
             pt = root.findall('PubmedArticle/MedlineCitation/Article/PublicationTypeList/PublicationType')
