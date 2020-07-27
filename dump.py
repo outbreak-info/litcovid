@@ -14,7 +14,7 @@ class LitCovidDumper(biothings.hub.dataload.dumper.LastModifiedHTTPDumper):
     SRC_ROOT_FOLDER = os.path.join(DATA_ARCHIVE_ROOT, SRC_NAME)
 
     # crontab format schedule, if None, won't be scheduled
-    SCHEDULE = "30 14 * * *" # daily at 14:30UTC/7:30PT    
+    SCHEDULE = "30 7 * * *" # daily at 14:30UTC/7:30PT    
 
     __metadata__ = {
         "src_meta": {
