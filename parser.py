@@ -25,6 +25,11 @@ def getPubMedDataFor(pmid):
     url = api_url+str(pmid)
     try:
         r = requests.get(url)
+        content = r.content
+        remove = ['<b>', '</b>', '<i>', '</i>']
+        for tag in remove:
+            content = content.replace(tag, '')
+
         doc = parseXMLTree(r.content,pmid)
         if doc:
             doc['from_cache'] = getattr(r, 'from_cache', None)
@@ -59,6 +64,9 @@ def parseXMLTree(res,pmid):
                                         "curationDate": datetime.date.today().strftime("%Y-%m-%d"),
                                         "url": f"https://www.ncbi.nlm.nih.gov/research/coronavirus/publication/{pmid}"}
             publication["name"] = getattr(root.find('PubmedArticle/MedlineCitation/Article/ArticleTitle'), 'text',None)
+            if publication["name"] is None:
+                vernacular_title = getattr(root.find('PubmedArticle/MedlineCitation/Article/VernacularTitle'), 'text',None)
+                publication["name"] = vernacular_title
             publication["identifier"] = getattr(root.find('PubmedArticle/MedlineCitation/PMID'), 'text',None)
             publication["pmid"] = getattr(root.find('PubmedArticle/MedlineCitation/PMID'), 'text',None)
             #Abstract
@@ -94,6 +102,8 @@ def parseXMLTree(res,pmid):
             if publication.get('doi'):
                 doi = publication["doi"]
                 publication["url"]= f"https://www.doi.org/{doi}"
+            else:
+                publication["url"] = f"https://www.ncbi.nlm.nih.gov/research/coronavirus/publication/{pmid}"
 
             #Authors
             auths = root.find('PubmedArticle/MedlineCitation/Article/AuthorList')
