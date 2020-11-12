@@ -14,25 +14,28 @@ from biothings import config
 logging = config.logger
 
 import requests_cache
+import random
+
+random.seed()
 
 expire_after = datetime.timedelta(days=7)
 
 # requests_cache.install_cache('litcovid_cache',expire_after=expire_after)
 # logging.debug("requests_cache: %s", requests_cache.get_cache().responses.filename)
 
-def getPubMedDataFor(pmid):
-    api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&api_key="+str(PUBMED_API_KEY)+"&id="
-    url = api_url+str(pmid)
+def getPubMedDataFor(pmid, session):
+    api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&api_key="
+    url     = f"{api_url}{PUBMED_API_KEY}&id={pmid}"
+
     try:
-        r = requests.get(url)
+        r = session.get(url)
         content = r.content
-        remove = ['<b>', '</b>', '<i>', '</i>']
+        remove = [b'<b>', b'</b>', b'<i>', b'</i>']
         for tag in remove:
-            content = content.replace(tag, '')
+            content = content.replace(tag, b'')
 
         doc = parseXMLTree(r.content,pmid)
         if doc:
-            doc['from_cache'] = getattr(r, 'from_cache', None)
             return doc
     except requests.exceptions.ConnectionError:
         logging.warning("Exceeded request for ID '%s'", pmid)
@@ -224,8 +227,30 @@ def parseXMLTree(res,pmid):
         logging.warning("Can't parse XML for PubMed ID '%s'", pmid)
         pass
 
-def load_annotations(data_folder):
+def throttle(response, *args, **kwargs):
+    if not getattr(response, 'from_cache', False):
+        logger.info('sleeping')
+        time.sleep(.2)
+    return response
 
+def remove_expired(session):
+    cache = session.cache
+    keys_to_delete = set()
+    for key in cache.responses:
+        try:
+            response, created_at = cache.responses[key]
+        except KeyError:
+            continue
+        if created_at < timedelta(days=10):
+            # definitely delete as stale if it's 10 days old
+            keys_to_delete.add(key)
+
+        if timedelta(days=5) < created_at <= timedelta(days=9) and random.choice([True, False, False, False]):
+            # remove ~25% of items between 5 & 9 days old
+            keys_to_delete.add(key)
+
+
+def load_annotations(data_folder):
     infile = os.path.join(data_folder,"litcovid2BioCJSON.gz")
     assert os.path.exists(infile)
 
@@ -236,19 +261,19 @@ def load_annotations(data_folder):
         data = data_list[1]
 
     doc_id_set = set()
-    with requests_cache.enabled('litcovid_cache', expire_after=expire_after):
-        logging.debug("requests_cache: %s", requests_cache.get_cache().responses.filename)
-        for i, rec in enumerate(data,start=1):
-            # NCBI eutils API limits requests to 10/sec
-            if i % 100 == 0:
-                logging.info("litcovid.parser.load_annotations progress %s", i)
+    requests_cache.install_cache('litcovid_cache')
+    requests_cache.clear()
+    s = requests_cache.CachedSession()
+    s.hooks = {'response': throttle}
+    logging.debug("requests_cache: %s", requests_cache.get_cache().responses.filename)
+    for i, rec in enumerate(data,start=1):
+        # NCBI eutils API limits requests to 10/sec
+        if i % 100 == 0:
+            logging.info("litcovid.parser.load_annotations progress %s", i)
 
-            doc = getPubMedDataFor(rec["pmid"])
-            if not doc['from_cache']:
-                time.sleep(.2)
-            doc.pop('from_cache')
-            if doc['_id'] not in doc_id_set:
-                yield doc
-            doc_id_set.add(doc['_id'])
-        requests_cache.core.remove_expired_responses()
-    # TODO: check they are disabled
+        doc = getPubMedDataFor(rec["pmid"], session=s)
+        if doc['_id'] not in doc_id_set:
+            yield doc
+        doc_id_set.add(doc['_id'])
+
+    remove_expired(s)
