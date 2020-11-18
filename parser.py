@@ -269,8 +269,15 @@ def load_annotations(data_folder):
         if i % 100 == 0:
             logger.info("litcovid.parser.load_annotations progress %s", i)
 
-        doc = getPubMedDataFor(pmid, session=s)
+        try:
+            doc = getPubMedDataFor(pmid, session=s)
+        except requests.exceptions.ConnectionError:
+            time.sleep(.5)
+            try:
+                doc = getPubMedDataFor(pmid, session=s)
+            except:
+                continue
+
         if doc['_id'] not in doc_id_set:
             yield doc
         doc_id_set.add(doc['_id'])
-
