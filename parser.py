@@ -240,11 +240,12 @@ def remove_expired(session):
             response, created_at = cache.responses[key]
         except KeyError:
             continue
-        if created_at < datetime.timedelta(days=10):
+        age = datetime.datetime.today() - created_at
+        if age > datetime.timedelta(days=10):
             # definitely delete as stale if it's 10 days old
             keys_to_delete.add(key)
 
-        if datetime.timedelta(days=5) < created_at <= datetime.timedelta(days=9) and random.choice([True, False, False, False]):
+        if datetime.timedelta(days=5) < age <= datetime.timedelta(days=9) and random.choice([True, False, False, False]):
             # remove ~25% of items between 5 & 9 days old
             keys_to_delete.add(key)
 
