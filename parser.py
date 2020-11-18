@@ -265,6 +265,7 @@ def load_annotations(data_folder):
     remove_expired(s)
     s.hooks = {'response': throttle}
     logger.debug("requests_cache: %s", requests_cache.get_cache().responses.filename)
+    given_up_ids = []
     for i, pmid in enumerate(data,start=1):
         # NCBI eutils API limits requests to 10/sec
         if i % 100 == 0:
@@ -277,6 +278,8 @@ def load_annotations(data_folder):
             try:
                 doc = getPubMedDataFor(pmid, session=s)
             except:
+                given_up_ids.append(pmid)
+                logger.warning(f"Giving up on {pmid}, given up on {len(given_up_ids)} docs")
                 continue
 
         if doc['_id'] not in doc_id_set:
