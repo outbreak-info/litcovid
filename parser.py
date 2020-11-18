@@ -253,8 +253,9 @@ def load_annotations(data_folder):
     infile = os.path.join(data_folder,"litcovid2BioCXML.gz")
     assert os.path.exists(infile)
 
-    root = ElementTree.parse(infile).getroot()
-    data = [i.find('id').text for i in root.findall('document')]
+    with open_anyfile(infile, mode='r') as f:
+        root = ElementTree.parse(f).getroot()
+        data = [i.find('id').text for i in root.findall('document')]
 
     doc_id_set = set()
     requests_cache.install_cache('litcovid_cache')
