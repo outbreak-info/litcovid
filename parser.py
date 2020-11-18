@@ -10,7 +10,7 @@ from .parser_config import PUBMED_API_KEY
 
 from biothings.utils.common import open_anyfile
 from biothings import config
-logging = config.logger
+logger = config.logger
 
 import requests_cache
 import random
@@ -20,7 +20,7 @@ random.seed()
 expire_after = datetime.timedelta(days=7)
 
 # requests_cache.install_cache('litcovid_cache',expire_after=expire_after)
-# logging.debug("requests_cache: %s", requests_cache.get_cache().responses.filename)
+# logger.debug("requests_cache: %s", requests_cache.get_cache().responses.filename)
 
 def getPubMedDataFor(pmid, session):
     api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&api_key="
@@ -37,7 +37,7 @@ def getPubMedDataFor(pmid, session):
         if doc:
             return doc
     except requests.exceptions.ConnectionError:
-        logging.warning("Exceeded request for ID '%s'", pmid)
+        logger.warning("Exceeded request for ID '%s'", pmid)
         raise
 
 def parseXMLTree(res,pmid):
@@ -183,7 +183,7 @@ def parseXMLTree(res,pmid):
                         dp = d.strftime("%Y-%m-%d")
                         publication["datePublished"] = dp
                     except:
-                        logging.warning("Publication date '%s' can't be parsed for PubMed ID '%s'", dp, pmid)
+                        logger.warning("Publication date '%s' can't be parsed for PubMed ID '%s'", dp, pmid)
             #Date Modified
             dates = root.findall('PubmedArticle/PubmedData/History/PubMedPubDate')
             for date in dates:
@@ -204,7 +204,7 @@ def parseXMLTree(res,pmid):
                                     d_mod = d.strftime("%Y-%m-%d")
                                     publication["dateModified"] = d_mod
                                 except:
-                                    logging.warning("Modified date '%s' can't be parsed for PubMed ID '%s'", d_mod, pmid)
+                                    logger.warning("Modified date '%s' can't be parsed for PubMed ID '%s'", d_mod, pmid)
 
             #publication Types
             pt = root.findall('PubmedArticle/MedlineCitation/Article/PublicationTypeList/PublicationType')
@@ -221,9 +221,9 @@ def parseXMLTree(res,pmid):
             return publication
         else:
             return False
-            logging.warning("No information for PubMed ID '%s'", pmid)
+            logger.warning("No information for PubMed ID '%s'", pmid)
     except ElementTree.ParseError:
-        logging.warning("Can't parse XML for PubMed ID '%s'", pmid)
+        logger.warning("Can't parse XML for PubMed ID '%s'", pmid)
         pass
 
 def throttle(response, *args, **kwargs):
@@ -263,11 +263,11 @@ def load_annotations(data_folder):
     s = requests_cache.CachedSession()
     remove_expired(s)
     s.hooks = {'response': throttle}
-    logging.debug("requests_cache: %s", requests_cache.get_cache().responses.filename)
+    logger.debug("requests_cache: %s", requests_cache.get_cache().responses.filename)
     for i, pmid in enumerate(data,start=1):
         # NCBI eutils API limits requests to 10/sec
         if i % 100 == 0:
-            logging.info("litcovid.parser.load_annotations progress %s", i)
+            logger.info("litcovid.parser.load_annotations progress %s", i)
 
         doc = getPubMedDataFor(pmid, session=s)
         if doc['_id'] not in doc_id_set:
