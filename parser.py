@@ -1,7 +1,6 @@
 import os
 
 import requests
-import json
 import time
 import datetime
 from xml.etree import ElementTree
@@ -251,29 +250,26 @@ def remove_expired(session):
 
 
 def load_annotations(data_folder):
-    infile = os.path.join(data_folder,"litcovid2BioCJSON.gz")
+    infile = os.path.join(data_folder,"litcovid2BioCXML.gz")
     assert os.path.exists(infile)
 
-    with open_anyfile(infile,mode='r') as file:
-        a = file.read()
-        data_list = json.loads(a)
-        # First item is a comment by provider
-        data = data_list[1]
+    root = ElementTree.parse(infile).getroot()
+    data = [i.find('id').text for i in root.findall('document')]
 
     doc_id_set = set()
     requests_cache.install_cache('litcovid_cache')
     requests_cache.clear()
     s = requests_cache.CachedSession()
+    remove_expired(s)
     s.hooks = {'response': throttle}
     logging.debug("requests_cache: %s", requests_cache.get_cache().responses.filename)
-    for i, rec in enumerate(data,start=1):
+    for i, pmid in enumerate(data,start=1):
         # NCBI eutils API limits requests to 10/sec
         if i % 100 == 0:
             logging.info("litcovid.parser.load_annotations progress %s", i)
 
-        doc = getPubMedDataFor(rec["pmid"], session=s)
+        doc = getPubMedDataFor(pmid, session=s)
         if doc['_id'] not in doc_id_set:
             yield doc
         doc_id_set.add(doc['_id'])
 
-    remove_expired(s)
