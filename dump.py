@@ -24,7 +24,7 @@ class LitCovidDumper(biothings.hub.dataload.dumper.LastModifiedHTTPDumper):
             },
             "code":{
                 "branch": "master",
-                "repo": "https://github.com/marcodarko/litcovid.git"
+                "repo": "https://github.com/outbreak-info/litcovid.git"
             },
             "url": "https://www.ncbi.nlm.nih.gov/research/coronavirus/ ",
             "license": "https://www.ncbi.nlm.nih.gov/home/about/policies/"
