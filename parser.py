@@ -33,7 +33,7 @@ def getPubMedDataFor(pmid, session):
         for tag in remove:
             content = content.replace(tag, b'')
 
-        doc = parseXMLTree(content)
+        doc = parseXMLTree(content, pmid)
         if doc:
             return doc
     except requests.exceptions.ConnectionError:
