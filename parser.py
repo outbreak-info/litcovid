@@ -251,12 +251,14 @@ def remove_expired(session):
 
 
 def load_annotations(data_folder):
-    infile = os.path.join(data_folder,"litcovid2BioCXML.gz")
-    assert os.path.exists(infile)
+    infile = [i for i in os.listdir(data_folder) if 'tsv' in i][0]
 
+    data = []
     with open_anyfile(infile, mode='r') as f:
-        root = ElementTree.parse(f).getroot()
-        data = [i.find('id').text for i in root.findall('document')]
+        for line in f:
+            if line.startswith('#') or line.startswith('p'):
+                continue
+            data.append(line.split('\t')[0])
 
     doc_id_set = set()
     requests_cache.install_cache('litcovid_cache')
