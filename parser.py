@@ -6,11 +6,11 @@ import datetime
 from xml.etree import ElementTree
 from dateutil import parser
 
-from .parser_config import PUBMED_API_KEY
-
-from biothings.utils.common import open_anyfile
-from biothings import config
-logger = config.logger
+#from .parser_config import PUBMED_API_KEY
+#
+#from biothings.utils.common import open_anyfile
+#from biothings import config
+#logger = config.logger
 
 import requests_cache
 import random
@@ -251,10 +251,11 @@ def remove_expired(session):
 
 
 def load_annotations(data_folder):
-    infile = [i for i in os.listdir(data_folder) if 'tsv' in i][0]
+    res = requests.get('https://www.ncbi.nlm.nih.gov/research/coronavirus-api/export/tsv?')
+    litcovid_data = res.text.split('\n')[34:]
 
     data = []
-    with open_anyfile(infile, mode='r') as f:
+    for line in litcovid_data:
         for line in f:
             if line.startswith('#') or line.startswith('p'):
                 continue
@@ -287,3 +288,6 @@ def load_annotations(data_folder):
         if doc['_id'] not in doc_id_set:
             yield doc
         doc_id_set.add(doc['_id'])
+
+if __name__ == '__main__':
+    [i for i in load_annotations(os.getcwd())]
