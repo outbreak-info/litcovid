@@ -256,10 +256,9 @@ def load_annotations(data_folder):
 
     data = []
     for line in litcovid_data:
-        for line in f:
-            if line.startswith('#') or line.startswith('p'):
-                continue
-            data.append(line.split('\t')[0])
+        if line.startswith('#') or line.startswith('p'):
+            continue
+        data.append(line.split('\t')[0])
 
     doc_id_set = set()
     requests_cache.install_cache('litcovid_cache')
