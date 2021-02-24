@@ -6,11 +6,11 @@ import datetime
 from xml.etree import ElementTree
 from dateutil import parser
 
-#from .parser_config import PUBMED_API_KEY
-#
-#from biothings.utils.common import open_anyfile
-#from biothings import config
-#logger = config.logger
+from .parser_config import PUBMED_API_KEY
+
+from biothings.utils.common import open_anyfile
+from biothings import config
+logger = config.logger
 
 import requests_cache
 import random
@@ -287,6 +287,3 @@ def load_annotations(data_folder):
         if doc['_id'] not in doc_id_set:
             yield doc
         doc_id_set.add(doc['_id'])
-
-if __name__ == '__main__':
-    [i for i in load_annotations(os.getcwd())]
