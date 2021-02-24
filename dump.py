@@ -32,5 +32,5 @@ class LitCovidDumper(biothings.hub.dataload.dumper.LastModifiedHTTPDumper):
     }
 
     SRC_URLS = [
-        'https://ftp.ncbi.nlm.nih.gov/pub/lu/LitCovid/litcovid2BioCXML.gz'
+            'https://www.ncbi.nlm.nih.gov/research/coronavirus-api/export/tsv?'
     ]
