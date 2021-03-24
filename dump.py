@@ -1,4 +1,5 @@
 import os
+import datetime
 
 import biothings, config
 biothings.config_for_app(config)
@@ -27,3 +28,9 @@ class LitCovidDumper(biothings.hub.dataload.dumper.DummyDumper):
         }
     }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.set_release()
+
+    def set_release(self):
+        self.release = datetime.datetime.now().strftime('%Y-%m-%d-%H:%M')
