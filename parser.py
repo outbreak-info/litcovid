@@ -175,7 +175,14 @@ def parseXMLTree(res,pmid):
             try:
                 dp = mm+"/"+dd+"/"+yy
             except:
-                pass
+                try:
+                    #Article Date
+                    mm = getattr(root.find('PubmedArticle/MedlineCitation/Article/ArticleDate/Month'), 'text',None)
+                    yy = getattr(root.find('PubmedArticle/MedlineCitation/Article/ArticleDate/Year'), 'text',None)
+                    dd = getattr(root.find('PubmedArticle/MedlineCitation/Article/ArticleDate/Day'), 'text',None)
+                    dp = mm+"/"+dd+"/"+yy
+                except:
+                    pass
             finally:
                 if dp:
                     try:
