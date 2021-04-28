@@ -41,7 +41,6 @@ def getPubMedDataFor(pmid, session):
         raise
 
 def parseXMLTree(res,pmid):
-
     publication={
         "@context": {
             "schema":"http://schema.org/",
@@ -192,6 +191,17 @@ def parseXMLTree(res,pmid):
                     except:
                         logger.warning("Publication date '%s' can't be parsed for PubMed ID '%s'", dp, pmid)
             #Date Modified
+            try:
+                #Date Revised
+                mm = getattr(root.find('PubmedArticle/MedlineCitation/DateRevised/Month'), 'text',None)
+                yy = getattr(root.find('PubmedArticle/MedlineCitation/DateRevised/Year'), 'text',None)
+                dd = getattr(root.find('PubmedArticle/MedlineCitation/DateRevised/Day'), 'text',None)
+                dm = mm+"/"+dd+"/"+yy
+                d = parser.parse(dm)
+                d_mod = d.strftime("%Y-%m-%d")
+                publication["dateModified"] = d_mod
+            except:
+                pass
             dates = root.findall('PubmedArticle/PubmedData/History/PubMedPubDate')
             for date in dates:
                 if date.attrib.get('PubStatus') == 'revised':
@@ -212,7 +222,43 @@ def parseXMLTree(res,pmid):
                                     publication["dateModified"] = d_mod
                                 except:
                                     logger.warning("Modified date '%s' can't be parsed for PubMed ID '%s'", d_mod, pmid)
-
+                #DateCreated
+                elif date.attrib.get('PubStatus') == 'pubmed':
+                    for child in date.iter():
+                        if child.tag == "Month": mm = getattr(child, 'text',None)
+                        if child.tag == "Day": dd = getattr(child, 'text',None)
+                        if child.tag == "Year": yy = getattr(child, 'text',None)
+                        d_mod =''
+                        try:
+                            d_mod = mm+"/"+dd+"/"+yy
+                        except:
+                            d_mod = None
+                        finally:
+                            if d_mod:
+                                try:
+                                    d = parser.parse(d_mod)
+                                    d_mod = d.strftime("%Y-%m-%d")
+                                    publication["dateCreated"] = d_mod
+                                except:
+                                    logger.warning("Pubmed creation date '%s' can't be parsed for PubMed ID '%s'", d_mod, pmid)
+            #Date Completed
+            mm = getattr(root.find('PubmedArticle/MedlineCitation/DateCompleted/Month'), 'text',None)
+            yy = getattr(root.find('PubmedArticle/MedlineCitation/DateCompleted/Year'), 'text',None)
+            dd = getattr(root.find('PubmedArticle/MedlineCitation/DateCompleted/Day'), 'text',None)
+            dc = ''
+            try:
+                dc = mm+"/"+dd+"/"+yy
+            except:
+                pass
+            finally:
+                if dc:
+                    try:
+                        d = parser.parse(dc)
+                        dc = d.strftime("%Y-%m-%d")
+                        publication["dateCompleted"] = dc
+                    except:
+                        logger.warning("Record completion date '%s' can't be parsed for PubMed ID '%s'", dc, pmid)
+                        
             #publication Types
             pt = root.findall('PubmedArticle/MedlineCitation/Article/PublicationTypeList/PublicationType')
             for t in pt:
