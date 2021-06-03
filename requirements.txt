@@ -1,2 +1,2 @@
 requests_cache
-git+git://github.com/juliamullen/outbreak_parser.git@main#outbreak_parser
+git+http://github.com/juliamullen/outbreak_parser.git@main#outbreak_parser
