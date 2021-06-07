@@ -6,7 +6,7 @@ import datetime
 from xml.etree import ElementTree
 from dateutil import parser
 
-from outbreak_parser.addendum import add_addendum
+#from outbreak_parser.addendum import add_addendum
 
 from .parser_config import PUBMED_API_KEY
 
@@ -305,7 +305,7 @@ def remove_expired(session):
             keys_to_delete.add(key)
 
 
-@add_addendum
+#@add_addendum
 def load_annotations(data_folder):
     res = requests.get('https://www.ncbi.nlm.nih.gov/research/coronavirus-api/export/tsv?')
     litcovid_data = res.text.split('\n')[34:]
