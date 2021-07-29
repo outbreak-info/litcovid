@@ -1,5 +1,4 @@
 import os
-import pathlib
 
 import requests
 import time
@@ -8,7 +7,6 @@ from xml.etree import ElementTree
 from dateutil import parser
 
 #from outbreak_parser.addendum import add_addendum
-from add_meta import *
 
 from .parser_config import PUBMED_API_KEY
 
@@ -170,15 +168,6 @@ def parseXMLTree(res,pmid):
                     publication["isBasedOn"].append(citObj)
             else:
                 del publication["isBasedOn"]
- 
-            #Corrections
-            try:
-                corrlist = parse_corrections(root)
-            except:
-                corrlist = []
-            if len(corrlist) > 0:
-                publication['correction'] = corrlist 
-
             #Pub Date
             mm = getattr(root.find('PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Month'), 'text',None)
             yy = getattr(root.find('PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Year'), 'text',None)
@@ -315,42 +304,9 @@ def remove_expired(session):
             # remove ~25% of items between 5 & 9 days old
             keys_to_delete.add(key)
 
-            
-def parse_corrections(root):
-    medline_corrections_dict = {"CommentIn":"comment in",
-                                "CommentOn":"comment on",
-                                "ErratumIn":"erratum in",
-                                "ErratumFor":"erratum for",
-                                "CorrectedAndRepublishedIn":"republished in",
-                                "CorrectedAndRepublishedFrom":"republished from",
-                                "DatasetDescribedIn":"dataset described in",
-                                "DatasetUseReportedIn":"dataset use reported in",
-                                "ExpressionOfConcernIn":"expression of concern in",
-                                "ExpressionOfConcernFor":"expression of concern for",
-                                "RepublishedIn":"republished in",
-                                "RepublishedFrom":"republished from",
-                                "RetractionIn":"retraction in",
-                                "RetractionOf":"retraction of",
-                                "UpdateIn":"update in",
-                                "UpdateOf":"update of"}
-    corrs = root.findall('PubmedArticle/MedlineCitation/CommentsCorrectionsList/CommentsCorrections')
-    corrlist = []
-    for eachcorr in corrs:
-        reftype = eachcorr.get('RefType')
-        refid = eachcorr.find('PMID').text
-        corrdict = {'identifier':'pmid'+refid,
-                    'url':f"https://www.ncbi.nlm.nih.gov/research/coronavirus/publication/{refid}",
-                    'pmid':refid}
-        corrdict['correctionType']=medline_corrections_dict[reftype]
-        corrlist.append(corrdict)
-    return(corrlist)
-
 
 #@add_addendum
 def load_annotations(data_folder):
-    ##general_path should be the directory containing the locally run versions of the preprint matcher, topic classifier and other repos.
-    general_path = '/opt/home/outbreak/'
-    
     res = requests.get('https://www.ncbi.nlm.nih.gov/research/coronavirus-api/export/tsv?')
     litcovid_data = res.text.split('\n')[34:]
 
@@ -375,12 +331,10 @@ def load_annotations(data_folder):
 
         try:
             doc = getPubMedDataFor(pmid, session=s)
-            doc = getAdditionalInfo(doc,general_path)
         except requests.exceptions.ConnectionError:
             time.sleep(.5)
             try:
                 doc = getPubMedDataFor(pmid, session=s)
-                doc = getAdditionalInfo(doc,general_path)
             except:
                 given_up_ids.append(pmid)
                 logger.warning(f"Giving up on {pmid}, given up on {len(given_up_ids)} docs")
