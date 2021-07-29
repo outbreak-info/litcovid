@@ -349,7 +349,7 @@ def parse_corrections(root):
 #@add_addendum
 def load_annotations(data_folder):
     ##general_path should be the directory containing the locally run versions of the preprint matcher, topic classifier and other repos.
-    general_path = '/opt/home/outbreak'
+    general_path = '/opt/home/outbreak/'
     
     res = requests.get('https://www.ncbi.nlm.nih.gov/research/coronavirus-api/export/tsv?')
     litcovid_data = res.text.split('\n')[34:]
