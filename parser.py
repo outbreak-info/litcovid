@@ -168,6 +168,15 @@ def parseXMLTree(res,pmid):
                     publication["isBasedOn"].append(citObj)
             else:
                 del publication["isBasedOn"]
+  
+            #Corrections
+            try:
+                corrlist = parse_corrections(root)
+            except:
+                corrlist = []
+            if len(corrlist) > 0:
+                publication['correction'] = corrlist 
+
             #Pub Date
             mm = getattr(root.find('PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Month'), 'text',None)
             yy = getattr(root.find('PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Year'), 'text',None)
@@ -280,6 +289,35 @@ def parseXMLTree(res,pmid):
     except ElementTree.ParseError:
         logger.warning("Can't parse XML for PubMed ID '%s'", pmid)
         pass
+
+def parse_corrections(root):
+    medline_corrections_dict = {"CommentIn":"comment in",
+                                "CommentOn":"comment on",
+                                "ErratumIn":"erratum in",
+                                "ErratumFor":"erratum for",
+                                "CorrectedAndRepublishedIn":"republished in",
+                                "CorrectedAndRepublishedFrom":"republished from",
+                                "DatasetDescribedIn":"dataset described in",
+                                "DatasetUseReportedIn":"dataset use reported in",
+                                "ExpressionOfConcernIn":"expression of concern in",
+                                "ExpressionOfConcernFor":"expression of concern for",
+                                "RepublishedIn":"republished in",
+                                "RepublishedFrom":"republished from",
+                                "RetractionIn":"retraction in",
+                                "RetractionOf":"retraction of",
+                                "UpdateIn":"update in",
+                                "UpdateOf":"update of"}
+    corrs = root.findall('PubmedArticle/MedlineCitation/CommentsCorrectionsList/CommentsCorrections')
+    corrlist = []
+    for eachcorr in corrs:
+        reftype = eachcorr.get('RefType')
+        refid = eachcorr.find('PMID').text
+        corrdict = {'identifier':'pmid'+refid,
+                    'url':f"https://www.ncbi.nlm.nih.gov/research/coronavirus/publication/{refid}",
+                    'pmid':refid}
+        corrdict['correctionType']=medline_corrections_dict[reftype]
+        corrlist.append(corrdict)
+    return(corrlist)
 
 def throttle(response, *args, **kwargs):
     if not getattr(response, 'from_cache', False):
