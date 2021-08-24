@@ -322,7 +322,7 @@ def load_annotations(data_folder):
     s = requests_cache.CachedSession()
     remove_expired(s)
     s.hooks = {'response': throttle}
-    logger.debug("requests_cache: %s", requests_cache.get_cache().responses.filename)
+    logger.debug("requests_cache: %s", requests_cache.get_cache().responses)
     given_up_ids = []
     for i, pmid in enumerate(data,start=1):
         # NCBI eutils API limits requests to 10/sec
