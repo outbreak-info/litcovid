@@ -312,7 +312,8 @@ def parse_corrections(root):
     for eachcorr in corrs:
         reftype = eachcorr.get('RefType')
         refid = eachcorr.find('PMID').text
-        corrdict = {'identifier':'pmid'+refid,
+        corrdict = {'@type': 'Correction',
+                    'identifier':'pmid'+refid,
                     'url':f"https://www.ncbi.nlm.nih.gov/research/coronavirus/publication/{refid}",
                     'pmid':refid}
         corrdict['correctionType']=medline_corrections_dict[reftype]
