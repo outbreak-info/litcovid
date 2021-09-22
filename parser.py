@@ -21,9 +21,6 @@ random.seed()
 
 expire_after = datetime.timedelta(days=7)
 
-# requests_cache.install_cache('litcovid_cache',expire_after=expire_after)
-# logger.debug("requests_cache: %s", requests_cache.get_cache().responses.filename)
-
 def getPubMedDataFor(pmid, session):
     api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&api_key="
     url     = f"{api_url}{PUBMED_API_KEY}&id={pmid}"
@@ -356,9 +353,7 @@ def load_annotations(data_folder):
         data.append(line.split('\t')[0])
 
     doc_id_set = set()
-    requests_cache.install_cache('litcovid_cache')
-    requests_cache.clear()
-    s = requests_cache.CachedSession()
+    s = requests_cache.CachedSession('litcovid_cache', expire_after=timedelta(days=7))
     remove_expired(s)
     s.hooks = {'response': throttle}
     logger.debug("requests_cache: %s", requests_cache.get_cache().responses)
