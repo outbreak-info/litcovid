@@ -6,8 +6,6 @@ import datetime
 from xml.etree import ElementTree
 from dateutil import parser
 
-#from outbreak_parser.addendum import add_addendum
-
 from .parser_config import PUBMED_API_KEY
 
 from biothings.utils.common import open_anyfile
@@ -323,25 +321,6 @@ def throttle(response, *args, **kwargs):
         time.sleep(.2)
     return response
 
-def remove_expired(session):
-    cache = session.cache
-    keys_to_delete = set()
-    for key in cache.responses:
-        try:
-            response, created_at = cache.responses[key]
-        except KeyError:
-            continue
-        age = datetime.datetime.today() - created_at
-        if age > datetime.timedelta(days=10):
-            # definitely delete as stale if it's 10 days old
-            keys_to_delete.add(key)
-
-        if datetime.timedelta(days=5) < age <= datetime.timedelta(days=9) and random.choice([True, False, False, False]):
-            # remove ~25% of items between 5 & 9 days old
-            keys_to_delete.add(key)
-
-
-#@add_addendum
 def load_annotations(data_folder):
     res = requests.get('https://www.ncbi.nlm.nih.gov/research/coronavirus-api/export/tsv?')
     litcovid_data = res.text.split('\n')[34:]
@@ -354,7 +333,6 @@ def load_annotations(data_folder):
 
     doc_id_set = set()
     s = requests_cache.CachedSession('litcovid_cache', expire_after=datetime.timedelta(days=7))
-    remove_expired(s)
     s.hooks = {'response': throttle}
     logger.debug("requests_cache: %s", requests_cache.get_cache().responses)
     given_up_ids = []
