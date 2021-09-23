@@ -334,7 +334,6 @@ def load_annotations(data_folder):
     doc_id_set = set()
     s = requests_cache.CachedSession('litcovid_cache', expire_after=datetime.timedelta(days=7))
     s.hooks = {'response': throttle}
-    logger.debug("requests_cache: %s", requests_cache.get_cache().responses)
     given_up_ids = []
     for i, pmid in enumerate(data,start=1):
         # NCBI eutils API limits requests to 10/sec
