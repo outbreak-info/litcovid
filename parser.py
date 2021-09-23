@@ -353,7 +353,7 @@ def load_annotations(data_folder):
         data.append(line.split('\t')[0])
 
     doc_id_set = set()
-    s = requests_cache.CachedSession('litcovid_cache', expire_after=timedelta(days=7))
+    s = requests_cache.CachedSession('litcovid_cache', expire_after=datetime.timedelta(days=7))
     remove_expired(s)
     s.hooks = {'response': throttle}
     logger.debug("requests_cache: %s", requests_cache.get_cache().responses)
