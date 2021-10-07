@@ -158,8 +158,13 @@ def parseXMLTree(res,pmid):
                         if cit.tag == "ArticleIdList":
                             cid = cit.find('ArticleId')
                             if cid.text:
-                                citObj['pmid']= cid.text
                                 citObj['identifier']= cid.text
+                                if "10." in cid.text:
+                                    citObj['doi']= cid.text
+                                elif "/" in cid.text:
+                                    pass
+                                else:
+                                    citObj['pmid']= cid.text
                     publication["isBasedOn"].append(citObj)
             else:
                 del publication["isBasedOn"]
