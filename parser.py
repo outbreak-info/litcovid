@@ -12,19 +12,12 @@ from biothings.utils.common import open_anyfile
 from biothings import config
 logger = config.logger
 
-import requests_cache
-import random
-
-random.seed()
-
-expire_after = datetime.timedelta(days=7)
-
-def getPubMedDataFor(pmid, session):
+def getPubMedDataFor(pmid):
     api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&api_key="
     url     = f"{api_url}{PUBMED_API_KEY}&id={pmid}"
 
     try:
-        r = session.get(url)
+        r = requests.get(url)
         content = r.content
         remove = [b'<b>', b'</b>', b'<i>', b'</i>']
         for tag in remove:
@@ -337,8 +330,6 @@ def load_annotations(data_folder):
         data.append(line.split('\t')[0])
 
     doc_id_set = set()
-    s = requests_cache.CachedSession('litcovid_cache', expire_after=datetime.timedelta(days=7))
-    s.hooks = {'response': throttle}
     given_up_ids = []
     for i, pmid in enumerate(data,start=1):
         # NCBI eutils API limits requests to 10/sec
@@ -346,11 +337,11 @@ def load_annotations(data_folder):
             logger.info("litcovid.parser.load_annotations progress %s", i)
 
         try:
-            doc = getPubMedDataFor(pmid, session=s)
+            doc = getPubMedDataFor(pmid)
         except requests.exceptions.ConnectionError:
-            time.sleep(.5)
+            time.sleep(2)
             try:
-                doc = getPubMedDataFor(pmid, session=s)
+                doc = getPubMedDataFor(pmid)
             except:
                 given_up_ids.append(pmid)
                 logger.warning(f"Giving up on {pmid}, given up on {len(given_up_ids)} docs")
