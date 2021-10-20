@@ -12,6 +12,15 @@ from biothings.utils.common import open_anyfile
 from biothings import config
 logger = config.logger
 
+import pathlib
+script_path = pathlib.Path(__file__).parent.absolute()
+with open(scriptpath+'append_misc_meta.py','w+') as appendfile:
+    r = requests.get('https://raw.githubusercontent.com/gtsueng/outbreak_misc_meta/main/append_misc_meta.py')
+    appendfile.write(r.text)
+    appendfile.close()
+
+from append_misc_meta import *
+
 def getPubMedDataFor(pmid):
     api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&api_key="
     url     = f"{api_url}{PUBMED_API_KEY}&id={pmid}"
@@ -320,6 +329,7 @@ def throttle(response, *args, **kwargs):
     return response
 
 def load_annotations(data_folder):
+    path_dict = fetch_path_dict()
     res = requests.get('https://www.ncbi.nlm.nih.gov/research/coronavirus-api/export/tsv?')
     litcovid_data = res.text.split('\n')[34:]
 
@@ -348,5 +358,6 @@ def load_annotations(data_folder):
                 continue
 
         if doc is not None and doc.get('_id') and doc['_id'] not in doc_id_set:
-            yield doc
+            eachdoc = add_anns(path_dict,doc)
+            yield eachdoc
         doc_id_set.add(doc['_id'])
