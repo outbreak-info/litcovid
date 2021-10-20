@@ -347,6 +347,6 @@ def load_annotations(data_folder):
                 logger.warning(f"Giving up on {pmid}, given up on {len(given_up_ids)} docs")
                 continue
 
-        if doc['_id'] not in doc_id_set:
+        if doc is not None and doc.get('_id') and doc['_id'] not in doc_id_set:
             yield doc
         doc_id_set.add(doc['_id'])
