@@ -1,6 +1,5 @@
 import os
 
-import requests
 import time
 import datetime
 from xml.etree import ElementTree
@@ -8,9 +7,10 @@ from dateutil import parser
 
 from .parser_config import PUBMED_API_KEY
 
+from outbreak_parser_tools import safe_request as requests
+from outbreak_parser_tools.logger import get_logger
+logger = get_logger('litcovid')
 from biothings.utils.common import open_anyfile
-from biothings import config
-logger = config.logger
 
 def getPubMedDataFor(pmid):
     api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&api_key="
@@ -336,6 +336,10 @@ def load_annotations(data_folder):
         if i % 100 == 0:
             logger.info("litcovid.parser.load_annotations progress %s", i)
 
+        #while debugging
+        #if i > 40:
+        #    return
+
         try:
             doc = getPubMedDataFor(pmid)
         except requests.exceptions.ConnectionError:
@@ -350,3 +354,8 @@ def load_annotations(data_folder):
         if doc is not None and doc.get('_id') and doc['_id'] not in doc_id_set:
             yield doc
         doc_id_set.add(doc['_id'])
+
+#import pickle
+#if __name__ == '__main__':
+#    t = [i for i in load_annotations('')]
+#    pickle.dump(t, open('outp.p', 'wb'))
