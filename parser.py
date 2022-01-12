@@ -26,7 +26,7 @@ def getPubMedDataFor(pmid):
         doc = parseXMLTree(content, pmid)
         if doc:
             return doc
-    except requests.exceptions.ConnectionError:
+    except IOError:
         logger.warning("Exceeded request for ID '%s'", pmid)
         raise
 
@@ -342,7 +342,7 @@ def load_annotations(data_folder):
 
         try:
             doc = getPubMedDataFor(pmid)
-        except requests.exceptions.ConnectionError:
+        except IOError:
             time.sleep(2)
             try:
                 doc = getPubMedDataFor(pmid)
