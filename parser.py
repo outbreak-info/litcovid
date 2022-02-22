@@ -4,6 +4,7 @@ import time
 import datetime
 from xml.etree import ElementTree
 from dateutil import parser
+from outbreak_parser_tools.addendum import Addendum
 
 from .parser_config import PUBMED_API_KEY
 
@@ -319,7 +320,7 @@ def throttle(response, *args, **kwargs):
         time.sleep(.2)
     return response
 
-def load_annotations(data_folder):
+def get_annotations():
     res = requests.get('https://www.ncbi.nlm.nih.gov/research/coronavirus-api/export/tsv?')
     litcovid_data = res.text.split('\n')[34:]
 
@@ -331,31 +332,34 @@ def load_annotations(data_folder):
 
     doc_id_set = set()
     given_up_ids = []
+
+    previous_docs = pickle.load(open('outp.p', 'rb'))
+    for doc in previous_docs:
+        doc_id_set.add(doc['_id'])
+        yield doc
+
     for i, pmid in enumerate(data,start=1):
         # NCBI eutils API limits requests to 10/sec
         if i % 100 == 0:
             logger.info("litcovid.parser.load_annotations progress %s", i)
 
-        #while debugging
-        #if i > 40:
-        #    return
+        es_id = f"pmid{pmid}"
+        if es_id in doc_id_set:
+            continue
 
         try:
             doc = getPubMedDataFor(pmid)
         except IOError:
-            time.sleep(2)
-            try:
-                doc = getPubMedDataFor(pmid)
-            except:
-                given_up_ids.append(pmid)
-                logger.warning(f"Giving up on {pmid}, given up on {len(given_up_ids)} docs")
-                continue
+            given_up_ids.append(pmid)
+            logger.warning(f"Giving up on {pmid}, given up on {len(given_up_ids)} docs")
+            continue
 
-        if doc is not None and doc.get('_id') and doc['_id'] not in doc_id_set:
+        if doc:
             yield doc
-        doc_id_set.add(doc['_id'])
+        doc_id_set.add(es_id)
 
-#import pickle
-#if __name__ == '__main__':
-#    t = [i for i in load_annotations('')]
-#    pickle.dump(t, open('outp.p', 'wb'))
+def load_annotations(data_folder):
+    pubs = [i for i in get_annotations()]
+    Addendum.topic_adder().update(pubs)
+    Addendum.altmetric_adder().update(pubs)
+    yield from pubs
