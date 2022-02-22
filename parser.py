@@ -360,6 +360,7 @@ def get_annotations():
 
 def load_annotations(data_folder):
     pubs = [i for i in get_annotations()]
+    Addendum.biorxiv_corrector().update(pubs)
     Addendum.topic_adder().update(pubs)
     Addendum.altmetric_adder().update(pubs)
     yield from pubs
