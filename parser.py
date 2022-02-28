@@ -348,7 +348,7 @@ def get_annotations():
         # NCBI eutils API limits requests to 10/sec
         if i % 100 == 0:
             percent_complete = 100 * (i / data_length)
-            logger.info("litcovid.parser.load_annotations progress {}, {}%".format(i, percent_complete)
+            logger.info("litcovid.parser.load_annotations progress {}, {}%".format(i, percent_complete))
 
         es_id = f"pmid{pmid}"
         if es_id in doc_id_set:
