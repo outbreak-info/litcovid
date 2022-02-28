@@ -341,6 +341,8 @@ def get_annotations():
         for doc in previous_docs:
             doc_id_set.add(doc['_id'])
             yield doc
+    except Exception:
+        pass
 
     for i, pmid in enumerate(data,start=1):
         # NCBI eutils API limits requests to 10/sec
