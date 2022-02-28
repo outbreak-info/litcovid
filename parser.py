@@ -341,6 +341,7 @@ def get_annotations():
         for doc in previous_docs:
             doc_id_set.add(doc['_id'])
             yield doc
+        logger.info("Yielded {} documents from cache".format(len(doc_id_set)))
     except Exception:
         logger.warning("Couldn't find litcovid cache file.")
         pass
