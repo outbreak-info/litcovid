@@ -13,6 +13,8 @@ from outbreak_parser_tools.logger import get_logger
 logger = get_logger('litcovid')
 from biothings.utils.common import open_anyfile
 
+CACHE_FILE_PATH = '/data/outbreak/plugins/litcovid/litcovid_cache.p'
+
 def getPubMedDataFor(pmid):
     api_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&api_key="
     url     = f"{api_url}{PUBMED_API_KEY}&id={pmid}"
@@ -332,16 +334,19 @@ def get_annotations():
 
     doc_id_set = set()
     given_up_ids = []
+    data_length = len(data)
 
-    previous_docs = pickle.load(open('outp.p', 'rb'))
-    for doc in previous_docs:
-        doc_id_set.add(doc['_id'])
-        yield doc
+    try:
+        previous_docs = pickle.load(open(CACHE_FILE_PATH, 'rb'))
+        for doc in previous_docs:
+            doc_id_set.add(doc['_id'])
+            yield doc
 
     for i, pmid in enumerate(data,start=1):
         # NCBI eutils API limits requests to 10/sec
         if i % 100 == 0:
-            logger.info("litcovid.parser.load_annotations progress %s", i)
+            percent_complete = 100 * (i / data_length)
+            logger.info("litcovid.parser.load_annotations progress {}, {}%".format(i, percent_complete)
 
         es_id = f"pmid{pmid}"
         if es_id in doc_id_set:
@@ -360,6 +365,9 @@ def get_annotations():
 
 def load_annotations(data_folder):
     pubs = [i for i in get_annotations()]
+    with open(CACHE_FILE_PATH, 'wb') as cache_file:
+        pickle.dump(pubs, cache_file)
+        logger.info('new cache file created')
     Addendum.biorxiv_corrector().update(pubs)
     Addendum.topic_adder().update(pubs)
     Addendum.altmetric_adder().update(pubs)
