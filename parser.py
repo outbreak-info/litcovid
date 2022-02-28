@@ -6,8 +6,7 @@ from xml.etree import ElementTree
 from dateutil import parser
 from outbreak_parser_tools.addendum import Addendum
 
-#from .parser_config import PUBMED_API_KEY
-PUBMED_API_KEY="3048f6bdb7c91cc8ad7af802559ec470e609"
+from .parser_config import PUBMED_API_KEY
 
 from outbreak_parser_tools import safe_request as requests
 from outbreak_parser_tools.logger import get_logger
