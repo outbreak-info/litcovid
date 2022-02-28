@@ -6,7 +6,8 @@ from xml.etree import ElementTree
 from dateutil import parser
 from outbreak_parser_tools.addendum import Addendum
 
-from .parser_config import PUBMED_API_KEY
+#from .parser_config import PUBMED_API_KEY
+PUBMED_API_KEY="3048f6bdb7c91cc8ad7af802559ec470e609"
 
 from outbreak_parser_tools import safe_request as requests
 from outbreak_parser_tools.logger import get_logger
@@ -347,7 +348,7 @@ def get_annotations():
     for i, pmid in enumerate(data,start=1):
         # NCBI eutils API limits requests to 10/sec
         if i % 100 == 0:
-            percent_complete = 100 * (i / data_length)
+            percent_complete = round(100 * (i / data_length), 3)
             logger.info("litcovid.parser.load_annotations progress {}, {}%".format(i, percent_complete))
 
         es_id = f"pmid{pmid}"
@@ -374,3 +375,6 @@ def load_annotations(data_folder):
     Addendum.topic_adder().update(pubs)
     Addendum.altmetric_adder().update(pubs)
     yield from pubs
+
+if __name__ == '__main__':
+    m=[q for q in load_annotations('')]
