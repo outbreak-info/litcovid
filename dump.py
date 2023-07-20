@@ -11,7 +11,7 @@ class LitCovidDumper(biothings.hub.dataload.dumper.DummyDumper):
     SRC_NAME = "litcovid"
     SRC_ROOT_FOLDER = os.path.join(DATA_ARCHIVE_ROOT, SRC_NAME)
 
-    SCHEDULE = "40 6 * * *"
+    SCHEDULE = "30 11 * * *"
 
     __metadata__ = {
         "src_meta": {
@@ -33,4 +33,6 @@ class LitCovidDumper(biothings.hub.dataload.dumper.DummyDumper):
         self.set_release()
 
     def set_release(self):
-        self.release = datetime.datetime.now().strftime('%Y-%m-%d-%H:%M')
+        mtime = os.path.getmtime('/home/jmullen/litcovid/d.json')
+        release_time = datetime.datetime.fromtimestamp(mtime)
+        self.release = release_time.strftime('%Y-%m-%d-%H:%M')

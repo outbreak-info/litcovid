@@ -1,4 +1,5 @@
 import os
+import json
 
 import time
 import datetime
@@ -368,10 +369,8 @@ def get_annotations():
         doc_id_set.add(es_id)
 
 def load_annotations(data_folder):
-    pubs = [i for i in get_annotations()]
-    with open(CACHE_FILE_PATH, 'wb') as cache_file:
-        pickle.dump(pubs, cache_file)
-        logger.info('new cache file created')
+    with open('/home/jmullen/litcovid/d.json') as data:
+        pubs = [json.loads(i) for i in data]
     Addendum.biorxiv_corrector().update(pubs)
     Addendum.topic_adder().update(pubs)
     Addendum.altmetric_adder().update(pubs)
